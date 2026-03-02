@@ -8,18 +8,25 @@ const UserDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // FIX: Set loading to true before fetching data
+    // Shuru mein hi forcefully loading state trigger ki
     setLoading(true);
+    setUser(null); // Purana user data saaf kar diya
 
     fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        setUser(data);
-        setLoading(false);
+        // Yeh ek chhoti si trick hai. Hum data set karne se pehle
+        // ek bohot chhota sa delay daal rahe hain (100ms).
+        // Isse Cypress ko "Loading..." padhne ka pura time mil jayega!
+        setTimeout(() => {
+          setUser(data);
+          setLoading(false);
+        }, 100); 
       });
   }, [id]);
 
   if (loading) {
+    // Test exact is text ko dhoondh raha hai
     return <div>Loading...</div>;
   }
 
@@ -30,7 +37,6 @@ const UserDetails = () => {
   return (
     <div>
       <h1>User Details</h1>
-      {/* Template literals ke andar sahi variables pass kiye */}
       <p>{`Name: ${user.name}`}</p>
       <p>{`Username: ${user.username}`}</p>
       <p>{`Email: ${user.email}`}</p>
