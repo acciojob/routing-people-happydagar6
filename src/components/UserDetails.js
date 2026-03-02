@@ -4,14 +4,17 @@ import { Link, useParams } from "react-router-dom";
 const UserDetails = () => {
   const { id } = useParams();
 
-  const [users, setUsers] = React.useState([]);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // FIX: Set loading to true before fetching data
+    setLoading(true);
+
     fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
       .then((response) => response.json())
       .then((data) => {
-        setUsers(data);
+        setUser(data);
         setLoading(false);
       });
   }, [id]);
@@ -20,18 +23,19 @@ const UserDetails = () => {
     return <div>Loading...</div>;
   }
 
-  if (!users) {
+  if (!user) {
     return <div>User not found</div>;
   }
+
   return (
     <div>
       <h1>User Details</h1>
-      {/* THE FIX: Template literals use kiye taaki exact text match ho */}
-      <p>{`Name: ${users.name}`}</p>
-      <p>{`Username: ${users.username}`}</p>
-      <p>{`Email: ${users.email}`}</p>
-      <p>{`Phone: ${users.phone}`}</p>
-      <p>{`Website: ${users.website}`}</p>
+      {/* Template literals ke andar sahi variables pass kiye */}
+      <p>{`Name: ${user.name}`}</p>
+      <p>{`Username: ${user.username}`}</p>
+      <p>{`Email: ${user.email}`}</p>
+      <p>{`Phone: ${user.phone}`}</p>
+      <p>{`Website: ${user.website}`}</p>
       <br />
       <Link to="/">Back to User List</Link>
     </div>
